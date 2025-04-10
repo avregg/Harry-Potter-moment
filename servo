@@ -1,35 +1,57 @@
 #include <Servo.h>
 
+//servo objects
+Servo letterServo;
+Servo bannerServo;
+
+//pin definitions
+const int letterSwitchPin = 2;
+const int bannerSwitchPin =3;
+const int letterServoPin = 9;
+const int bannerServoPin = 10;
+
+//state variable to trigger each interaction only once
+bool hasDroppedLetters = false;
+bool hasSorted = false;
+
+void setup() {
+  pinMode(letterSwitchPin, INPUT);
+  pinMode(bannerSwitchPin, INPUT);
+
+  letterServo.attach(letterServoPin);
+  bannerServo.attach(bannerServoPin);
+
+  letterServo.write(0); //starting position
+  bannerServo.write(0);
+}
+
 //TESTING IF THE COPPER TAPE IS WORKING............................
-void setup() {
-  pinMode(2, INPUT);
-  Serial.begin(9600);
-}
+//void setup() {
+//  pinMode(2, INPUT);
+//  Serial.begin(9600);
+//}
+
+//void loop() {
+//  int state = digitalRead(2);
+//  Serial.println(state);
+//  delay(100);
+
+//FIRST INTERACTION LETTER DROP.......................................
 
 void loop() {
-  int state = digitalRead(2);
-  Serial.println(state);
-  delay(100);
-
-//FIRST INTERACTION.......................................
-
-Servo letterServo;  //servo object
-const int switchPin = 2;
-const int servoPin = 9;
-
-void setup() {
-  pinMode(switchPin, INPUT);
-  letterServo.attach(servoPin);
-  letterServo.write(0); //start position (closed)
-}
-
-void loop() {
-  int switchState = digitalRead(switchPin);
-//triggered, drop the letters
-
+  int letterSwitchState = digitalRead(letterSwitchPin);
+  if (letterSwitchState == HIGH && !hasDroppedLetters) {
   letterServo.write(90); //adjust angle to release compartments
   delay(1000); //wait for letters to fall
   letterServo.write(0); //return to start
-hasDropped = true; //so it doesn't repeat
+hasDroppedLetters = true; //so it doesn't repeat
+}
+
+//SECOND INTERACTION SORTING HAT BANNER.................................
+  int bannerSwitchState = digitalRead(bannerSwitchPin);
+  if(bannerSwitchState ==HIGH && !hasSorted) {
+  bannerServo.write(90);
+  delay(1000);
+  hasSorted = true;
   }
-} 
+}
