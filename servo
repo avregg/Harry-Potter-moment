@@ -2,27 +2,48 @@
 
 //servo objects
 Servo letterServo;
-Servo bannerServo;
+Servo trainWindowServo;
+Servo ronHorseServo;
+Servo voldemortServo;
 
 //pin definitions
-const int letterSwitchPin = 2;
-const int bannerSwitchPin =3;
-const int letterServoPin = 9;
-const int bannerServoPin = 10;
+//switches
+const int letterSwitchPin = 4;
+const int trainSwitchPin = 3;
+const int chessSwitchPin = 2;
+const int voldemortSwitchPin = 7;
+
+
+//servos
+const int letterServoPin = 11;
+const int trainWindowServoPin = 9;
+const int ronServoPin = 10;
+const int voldemortServoPin = 6; 
+
 
 //state variable to trigger each interaction only once
-bool hasDroppedLetters = false;
-bool hasSorted = false;
+//bool hasDroppedLetters = false;
+//bool hasOpenedTrainWindow = false;
+//bool hasSacrificedRon = false;
+//bool hasFallen = false;
 
 void setup() {
   pinMode(letterSwitchPin, INPUT);
-  pinMode(bannerSwitchPin, INPUT);
+  pinMode(trainSwitchPin, INPUT);
+  pinMode(chessSwitchPin, INPUT);
+  pinMode(voldemortSwitchPin, INPUT);
 
   letterServo.attach(letterServoPin);
-  bannerServo.attach(bannerServoPin);
+  trainWindowServo.attach(trainWindowServoPin);
+  ronHorseServo.attach(ronServoPin);
+  voldemortServo.attach(voldemortServoPin);
+
 
   letterServo.write(0); //starting position
-  bannerServo.write(0);
+  trainWindowServo.write(180);
+  ronHorseServo.write(180);
+  voldemortServo.write(80);
+
 }
 
 //TESTING IF THE COPPER TAPE IS WORKING............................
@@ -36,22 +57,49 @@ void setup() {
 //  Serial.println(state);
 //  delay(100);
 
-//FIRST INTERACTION LETTER DROP.......................................
-
 void loop() {
-  int letterSwitchState = digitalRead(letterSwitchPin);
-  if (letterSwitchState == HIGH && !hasDroppedLetters) {
-  letterServo.write(90); //adjust angle to release compartments
-  delay(1000); //wait for letters to fall
-  letterServo.write(0); //return to start
-hasDroppedLetters = true; //so it doesn't repeat
-}
+//FIRST INTERACTION LETTER DROP.......................................
+  if (digitalRead(letterSwitchPin) == HIGH) {
+    letterServo.write(0);
+    delay(1000);
+    letterServo.write(80); //back to start
+    delay(500);
+    Serial.println("on");
+  } else {
+    letterServo.write(0);
+     Serial.println("off");
 
-//SECOND INTERACTION SORTING HAT BANNER.................................
-  int bannerSwitchState = digitalRead(bannerSwitchPin);
-  if(bannerSwitchState ==HIGH && !hasSorted) {
-  bannerServo.write(90);
-  delay(1000);
-  hasSorted = true;
+  }
+
+//SECOND INTERACTION TRAIN WINDOW
+  if (digitalRead(trainSwitchPin) == HIGH) {
+    trainWindowServo.write(180);
+    delay(1000);
+    trainWindowServo.write(180);
+    delay(500);
+    Serial.println("on");
+      } else {
+    letterServo.write(0);
+     Serial.println("off");
+      }
+
+//THIRD INTERACTION RON SACRIFICE
+  if (digitalRead(chessSwitchPin) == HIGH) {
+    ronHorseServo.write(180);
+    delay(1000);
+    ronHorseServo.write(0);
+    delay(500);
+  }
+
+//FOURTH INTERACTION VOLDEMORT DYING
+  if (digitalRead(voldemortSwitchPin) == HIGH) {
+    voldemortServo.write(180);
+    Serial.println("on");
+    delay(1000);
+    voldemortServo.write(0);
+    delay(500);
+  } else{
+    voldemortServo.write(0);
+
   }
 }
